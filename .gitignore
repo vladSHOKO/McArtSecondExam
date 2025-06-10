@@ -1,0 +1,6 @@
+bitrix/
+.git/
+upload/
+.gitconfig
+.bash_history
+.lesshst
