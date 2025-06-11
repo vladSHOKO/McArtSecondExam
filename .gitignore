@@ -4,3 +4,4 @@ upload/
 .gitconfig
 .bash_history
 .lesshst
+!local/
