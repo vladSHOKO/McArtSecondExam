@@ -4,9 +4,6 @@
 	<?=$arResult["NAV_STRING"]?><br />
 <?endif;?>
 
-<!--    <pre>-->
-<!--        --><?//print_r($arResult["ITEMS"])?>
-<!--    </pre>-->
 <?
 foreach($arResult["ITEMS"] as $cell=>$arElement):
 	$width = 0;

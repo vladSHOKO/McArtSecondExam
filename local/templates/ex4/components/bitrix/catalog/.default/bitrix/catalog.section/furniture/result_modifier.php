@@ -18,8 +18,17 @@ if (!empty($productIds)) {
     $res = CIBlockElement::GetList([], $arFilter, false, false, ['ID', 'NAME', 'PROPERTY_PRODUCT', 'PROPERTY_AUTHOR']);
 }
 
+$reviewsCount = 0;
+
 while ($review = $res->Fetch()) {
     $reviews[$review['PROPERTY_PRODUCT_VALUE']][] = $review['NAME'];
+    $reviewsCount++;
+}
+
+//Изменение placeholder в мета теге ex2_meta
+if ($reviewsCount != 0) {
+    $metaValue = $APPLICATION->GetPageProperty('ex2_meta');
+    $APPLICATION->SetPageProperty('ex2_meta', 'ex2 ' . $reviewsCount);
 }
 
 foreach ($arResult['ITEMS'] as $key => $arItem) {
