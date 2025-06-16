@@ -140,6 +140,8 @@ IncludeTemplateLangFile(__FILE__);
 					</div>
 				</div>
 
+                <?$APPLICATION->ShowViewContent('additionalContent')?>
+
 				<div class="content-block">
 					<div class="content-block-inner">
 

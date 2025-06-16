@@ -25,12 +25,27 @@ while ($review = $res->Fetch()) {
     $reviewsCount++;
 }
 
-//Изменение placeholder в мета теге ex2_meta
 if ($reviewsCount != 0) {
+    //Изменение placeholder в мета теге ex2_meta
     $metaValue = $APPLICATION->GetPageProperty('ex2_meta');
     $APPLICATION->SetPageProperty('ex2_meta', 'ex2 ' . $reviewsCount);
-}
 
+    $firstReview = reset($reviews);
+    $firstReviewTitle = $firstReview[key($firstReview)];
+
+    $APPLICATION->AddViewContent('additionalContent', '<div id="filial-special" class="information-block">
+                    <div class="top"></div>
+                    <div class="information-block-inner">
+                        <h3>' . GetMessage("ADDITIONAL") . '</h3>
+                        <div class="special-product">
+                            <div class="special-product-title">
+                                ' . $firstReviewTitle . '
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom"></div>
+                </div>');
+}
 foreach ($arResult['ITEMS'] as $key => $arItem) {
     $arItem['PRICES']['PRICE']['PRINT_VALUE'] = number_format(
         (float)$arItem['PRICES']['PRICE']['PRINT_VALUE'],
@@ -43,4 +58,8 @@ foreach ($arResult['ITEMS'] as $key => $arItem) {
     $arItem['REVIEWS'] = $reviews[$arItem['ID']] ?? [];
 
     $arResult['ITEMS'][$key] = $arItem;
+
+    if (!empty($firstReview)) {
+        $arResult['FIRST_REVIEW'] = $firstReview;
+    }
 }
