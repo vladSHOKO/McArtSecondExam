@@ -15,7 +15,7 @@ $arFilter = [
     'PROPERTY_AUTHOR.GROUP_ID' => 6 // ID группы "Авторы рецензий"
 ];
 if (!empty($productIds)) {
-    $res = CIBlockElement::GetList([], $arFilter, false, false, ['ID', 'NAME', 'PROPERTY_PRODUCT', 'PROPERTY_AUTHOR']);
+    $res = CIBlockElement::GetList(["ID" => "ASC"], $arFilter, false, false, ['ID', 'NAME', 'PROPERTY_PRODUCT', 'PROPERTY_AUTHOR']);
 }
 
 $reviewsCount = 0;
