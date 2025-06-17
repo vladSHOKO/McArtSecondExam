@@ -13,7 +13,7 @@ class ReviewEventHandler
             CAdminMessage::ShowMessage('Текст анонса слишком короткий: ' . mb_strlen($arFields['PREVIEW_TEXT']));
             return false;
         }
-
+        AddMessage2Log($arFields);
         return true;
     }
 
@@ -27,4 +27,8 @@ class ReviewEventHandler
         return mb_strlen($announcement) < $length;
     }
 
+    public static function onAfterIBlockElementUpdate(&$arFields): bool
+    {
+        return true;
+    }
 }
