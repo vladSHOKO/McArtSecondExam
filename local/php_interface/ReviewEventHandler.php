@@ -6,6 +6,11 @@ class ReviewEventHandler
 {
     public static function onBeforeIBlockElementAddOrUpdateHandler(&$arFields): bool
     {
+        //Проверка, что это инфоблок рецензии
+        if ($arFields['IBLOCK_ID'] != 5) {
+            return true;
+        }
+
         $newPreviewText = self::deletePlaceholder('#del#', $arFields['PREVIEW_TEXT']);
         $arFields['PREVIEW_TEXT'] = $newPreviewText;
 
@@ -13,7 +18,7 @@ class ReviewEventHandler
             CAdminMessage::ShowMessage('Текст анонса слишком короткий: ' . mb_strlen($arFields['PREVIEW_TEXT']));
             return false;
         }
-        AddMessage2Log($arFields);
+
         return true;
     }
 
@@ -27,8 +32,54 @@ class ReviewEventHandler
         return mb_strlen($announcement) < $length;
     }
 
-    public static function onAfterIBlockElementUpdate(&$arFields): bool
+    public static function saveAuthorNameBeforeChange(&$arFields): bool
     {
+        if ($arFields['IBLOCK_ID'] != 5) {
+            return true;
+        }
+
+        $element = CIBlockElement::GetByID($arFields['ID'])->Fetch();
+
+        $oldAuthor = CIBlockElement::GetProperty($arFields['IBLOCK_ID'], $element['ID'], [], [], ['CODE' => 'AUTHOR'])->Fetch()['VALUE'];
+
+        //Получение ID нового автора по изменяемому id свойства
+        $newAuthorKey = key($arFields['PROPERTY_VALUES'][9]);
+        $newAuthor = $arFields['PROPERTY_VALUES'][9][$newAuthorKey]['VALUE'];
+
+
+        $GLOBALS['AUTHOR_CHANGES'] = [
+            'OLD_AUTHOR' => $oldAuthor,
+            'NEW_AUTHOR' => $newAuthor,
+        ];
+
         return true;
+    }
+
+    public static function checkAuthorChangesAfterUpdate(&$arFields): bool
+    {
+        if ($arFields['IBLOCK_ID'] != 5) {
+            return true;
+        }
+
+        if ($GLOBALS['AUTHOR_CHANGES']['OLD_AUTHOR'] !== $GLOBALS['AUTHOR_CHANGES']['NEW_AUTHOR']) {
+            self::logAuthorChanges($arFields['IBLOCK_ID']);
+        }
+
+        return true;
+    }
+
+    public static function logAuthorChanges(string|int $reviewId): void
+    {
+        $oldAuthor = $GLOBALS['AUTHOR_CHANGES']['OLD_AUTHOR'];
+        $newAuthor = $GLOBALS['AUTHOR_CHANGES']['NEW_AUTHOR'];
+
+        CEventLog::Add(
+            [
+                'SEVERITY' => 'INFO',
+                'AUDIT_TYPE_ID' => 'ex2-590',
+                'DESCRIPTION' => "В рецензии {$reviewId} изменился автор с {$oldAuthor} на {$newAuthor}"
+
+            ]
+        );
     }
 }
