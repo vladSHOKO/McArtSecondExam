@@ -52,7 +52,7 @@ foreach($arResult["ITEMS"] as $cell=>$arElement):
         <?
         if (!empty($arElement['REVIEWS'])):
         foreach($arElement['REVIEWS'] as $key => $review):?>
-            <?= $review?>
+            <?= $review?><br>
         <?endforeach;
         endif;?>
 
