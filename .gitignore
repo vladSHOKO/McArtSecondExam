@@ -1,4 +1,4 @@
-bitrix/
+/bitrix/
 .git/
 upload/
 .gitconfig
