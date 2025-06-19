@@ -50,16 +50,10 @@ class UserEventHandler
         $userOldClass = $GLOBALS['USER_CHANGES']['OLD_USER_CLASS'];
         $userNewClass = $GLOBALS['USER_CHANGES']['NEW_USER_CLASS'];
 
-        AddMessage2Log($userOldClass);
-        AddMessage2Log($userNewClass);
-
-
         $fields = [
             'OLD_USER_CLASS' => $userOldClass,
             'NEW_USER_CLASS' => $userNewClass,
         ];
         CEvent::Send($eventName, 's1', $fields);
-        AddMessage2Log(CEvent::Send($eventName, 's1', $fields));
-
     }
 }
