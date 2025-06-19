@@ -33,19 +33,6 @@ if ($reviewsCount != 0) {
 
     $firstReview = reset($reviews);
     $firstReviewTitle = $firstReview[key($firstReview)];
-
-    $APPLICATION->AddViewContent('additionalContent', '<div id="filial-special" class="information-block">
-                    <div class="top"></div>
-                    <div class="information-block-inner">
-                        <h3>' . GetMessage("ADDITIONAL") . '</h3>
-                        <div class="special-product">
-                            <div class="special-product-title">
-                                ' . $firstReviewTitle . '
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bottom"></div>
-                </div>');
 }
 foreach ($arResult['ITEMS'] as $key => $arItem) {
     $arItem['PRICES']['PRICE']['PRINT_VALUE'] = number_format(
@@ -60,7 +47,8 @@ foreach ($arResult['ITEMS'] as $key => $arItem) {
 
     $arResult['ITEMS'][$key] = $arItem;
 
-    if (!empty($firstReview)) {
-        $arResult['FIRST_REVIEW'] = $firstReview;
+    if (!empty($firstReviewTitle)) {
+        $arResult['FIRST_REVIEW_TITLE'] = $firstReviewTitle;
+        $this->__component->SetResultCacheKeys(['FIRST_REVIEW_TITLE']);
     }
 }
