@@ -16,3 +16,6 @@ $eventManager->registerEventHandler('iblock', 'OnAfterIBlockElementUpdate', 'ibl
 //Задание ex2-600
 $eventManager->registerEventHandler('main', 'OnBeforeUserUpdate', 'main', 'UserEventHandler', 'saveUserClassBeforeUpdate');
 $eventManager->registerEventHandler('main', 'OnAfterUserUpdate', 'main', 'UserEventHandler', 'checkUserClassChangesAfterUpdate');
+
+//Задание ex2-620
+$eventManager->registerEventHandler('main', 'OnSendUserInfo', 'main', 'UserEventHandler', 'onSendUserInfo');

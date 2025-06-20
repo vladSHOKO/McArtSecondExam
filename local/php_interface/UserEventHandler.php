@@ -56,4 +56,17 @@ class UserEventHandler
         ];
         CEvent::Send($eventName, 's1', $fields);
     }
+
+    public static function onSendUserInfo(&$arParams)
+    {
+        $user = CUser::GetByID($arParams['FIELDS']['USER_ID'])->Fetch();
+
+        $userClassList = self::makeUserClassFieldsList();
+
+        $arParams['FIELDS']['CLASS'] = $userClassList[$user['UF_USER_CLASS']];
+
+        $arParams['FIELDS']['MESSAGE'] = 'TEST';
+
+        CEvent::Send('USER_INFO', 's1', $arParams['FIELDS']);
+    }
 }
