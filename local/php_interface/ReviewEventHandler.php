@@ -82,4 +82,33 @@ class ReviewEventHandler
             ]
         );
     }
+
+    public static function addReviewTitleOnBeforeIndex($arFields): array
+    {
+        if ($arFields['MODULE_ID'] != 'iblock' || $arFields['PARAM1'] != 'ex2') {
+            return $arFields;
+        }
+
+        $requestProperty = CIBlockElement::GetProperty(5, $arFields['ITEM_ID']);
+
+        $reviewProperties = [];
+
+        while ($result = $requestProperty->Fetch()) {
+            $reviewProperties[$result['ID']] = $result['VALUE'];
+        }
+
+        $authorID = $reviewProperties[9];
+
+        $classList = UserEventHandler::makeUserClassFieldsList();
+
+        $requestAuthorProperty = CUser::GetByID($authorID)->Fetch();
+
+        $userClassName = $classList[$requestAuthorProperty['UF_USER_CLASS']];
+
+        $arFields['TITLE'] .= ". Класс: {$userClassName}";
+
+        AddMessage2Log($arFields);
+
+        return $arFields;
+    }
 }
