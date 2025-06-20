@@ -17,7 +17,9 @@ $eventManager->registerEventHandler('iblock', 'OnAfterIBlockElementUpdate', 'ibl
 $eventManager->registerEventHandler('main', 'OnBeforeUserUpdate', 'main', 'UserEventHandler', 'saveUserClassBeforeUpdate');
 $eventManager->registerEventHandler('main', 'OnAfterUserUpdate', 'main', 'UserEventHandler', 'checkUserClassChangesAfterUpdate');
 
-<<<<<<< HEAD
+//Задание ex2-620
+$eventManager->registerEventHandler('main', 'OnSendUserInfo', 'main', 'UserEventHandler', 'onSendUserInfo');
+
 //Задание ex2-630
 $eventManager->registerEventHandler('search', 'BeforeIndex', 'search', 'ReviewEventHandler', 'addReviewTitleOnBeforeIndex');
 
@@ -46,7 +48,3 @@ function Agent_ex_610() {
 
     return "Agent_ex_610();";
 }
-=======
-//Задание ex2-620
-$eventManager->registerEventHandler('main', 'OnSendUserInfo', 'main', 'UserEventHandler', 'onSendUserInfo');
->>>>>>> Task-ex2-620
