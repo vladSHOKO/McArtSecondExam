@@ -1,13 +1,12 @@
 <?php
 
-use Bitrix\Main\Diag\FileLogger;
-
 class ReviewEventHandler
 {
     public static function onBeforeIBlockElementAddOrUpdateHandler(&$arFields): bool
     {
-        //Проверка, что это инфоблок рецензии
-        if ($arFields['IBLOCK_ID'] != 5) {
+        $reviewIBlockId = DefaultValueKeeper::getReviewIBlockId();
+
+        if ($arFields['IBLOCK_ID'] != $reviewIBlockId) {
             return true;
         }
 
@@ -34,7 +33,9 @@ class ReviewEventHandler
 
     public static function saveAuthorNameBeforeChange(&$arFields): bool
     {
-        if ($arFields['IBLOCK_ID'] != 5) {
+        $reviewIBlockId = DefaultValueKeeper::getReviewIBlockId();
+
+        if ($arFields['IBLOCK_ID'] != $reviewIBlockId) {
             return true;
         }
 
@@ -57,7 +58,9 @@ class ReviewEventHandler
 
     public static function checkAuthorChangesAfterUpdate(&$arFields): bool
     {
-        if ($arFields['IBLOCK_ID'] != 5) {
+        $reviewIBlockId = DefaultValueKeeper::getReviewIBlockId();
+
+        if ($arFields['IBLOCK_ID'] != $reviewIBlockId) {
             return true;
         }
 

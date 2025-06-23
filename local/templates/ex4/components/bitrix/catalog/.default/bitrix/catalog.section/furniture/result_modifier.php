@@ -8,17 +8,9 @@ $productIds = array_column($arResult['ITEMS'], 'ID');
 
 $reviews = [];
 
-$reviewIBlockId = (\Bitrix\Iblock\IblockTable::getList([
-    'filter' => [
-        'CODE' => 'reviews'
-    ],
-    'select' => ['ID']
-])->fetch())['ID'];
+$reviewIBlockId = DefaultValueKeeper::getReviewIBlockId();
 
-$authorGroupId = (\Bitrix\Main\GroupTable::getList([
-    'filter' => ['STRING_ID' => 'review_authors'],
-    'select' => ['ID']
-])->fetch())['ID'];
+$authorGroupId = DefaultValueKeeper::getAuthorGroupId();
 
 $users = \Bitrix\Main\UserTable::getList([
     'filter' => [

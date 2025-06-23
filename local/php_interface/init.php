@@ -3,6 +3,9 @@
 include 'ReviewEventHandler.php';
 include 'UserEventHandler.php';
 include 'MenuEventHandler.php';
+include 'DefaultValueKeeper.php';
+
+DefaultValueKeeper::setDefaults();
 
 $eventManager = \Bitrix\Main\EventManager::GetInstance();
 
@@ -36,9 +39,11 @@ function Agent_ex_610() {
         return "Agent_ex_610();";
     }
 
+    $reviewIBlockId = DefaultValueKeeper::getReviewIBlockId();
+
     $arFilter = [
         'ACTIVE' => 'Y',
-        'IBLOCK_ID' => 5, //ID рецензий
+        'IBLOCK_ID' => $reviewIBlockId,
     ];
 
     $res = CIBlockElement::GetList([], $arFilter);
