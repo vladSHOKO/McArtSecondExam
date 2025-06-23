@@ -104,10 +104,9 @@ class ReviewEventHandler
         $requestAuthorProperty = CUser::GetByID($authorID)->Fetch();
 
         $userClassName = $classList[$requestAuthorProperty['UF_USER_CLASS']];
-
-        $arFields['TITLE'] .= ". Класс: {$userClassName}";
-
-        AddMessage2Log($arFields);
+        if (!empty($userClassName)) {
+            $arFields['TITLE'] .= ". Класс: {$userClassName}";
+        }
 
         return $arFields;
     }

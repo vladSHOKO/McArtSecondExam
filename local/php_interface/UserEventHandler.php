@@ -15,6 +15,7 @@ class UserEventHandler
             'OLD_USER_CLASS' => $userOldClassName,
             'NEW_USER_CLASS' => $userNewClassName,
         ];
+        \Bitrix\Iblock\IblockTable::getList();
     }
 
     public static function makeUserClassFieldsList(): array

@@ -24,8 +24,6 @@ $eventManager->registerEventHandler('main', 'OnSendUserInfo', 'main', 'UserEvent
 $eventManager->registerEventHandler('search', 'BeforeIndex', 'search', 'ReviewEventHandler', 'addReviewTitleOnBeforeIndex');
 
 //Задание ex2-610
-CAgent::AddAgent("Agent_ex_610();", '', 'Y', '20');
-
 function Agent_ex_610() {
 
     $recentStart = COption::GetOptionString("main", "agent_recent_start");
