@@ -8,14 +8,41 @@ $productIds = array_column($arResult['ITEMS'], 'ID');
 
 $reviews = [];
 
+$reviewIBlockId = (\Bitrix\Iblock\IblockTable::getList([
+    'filter' => [
+        'CODE' => 'reviews'
+    ],
+    'select' => ['ID']
+])->fetch())['ID'];
+
+$authorGroupId = (\Bitrix\Main\GroupTable::getList([
+    'filter' => ['STRING_ID' => 'review_authors'],
+    'select' => ['ID']
+])->fetch())['ID'];
+
+$users = \Bitrix\Main\UserTable::getList([
+    'filter' => [
+        '=UF_AUTHOR_STATUS' => '35', //Значение "Публикуется"
+        "Bitrix\Main\UserGroupTable:USER.GROUP_ID" => $authorGroupId
+    ],
+    'select' => [
+        'ID'
+    ]
+])->fetchAll();
+
+$validAuthorsId = array_column($users, 'ID');
+
 $arFilter = [
-    'IBLOCK_ID' => 5, // ID инфоблока рецензий
+    'IBLOCK_ID' => $reviewIBlockId,
     'PROPERTY_PRODUCT' => $productIds,
-    'PROPERTY_AUTHOR.STATUS' => 'Публикуется',
-    'PROPERTY_AUTHOR.GROUP_ID' => 6 // ID группы "Авторы рецензий"
+    'PROPERTY_AUTHOR' => $validAuthorsId,
 ];
 if (!empty($productIds)) {
-    $res = CIBlockElement::GetList(["PROPERTY_PRODUCT" => "desc"], $arFilter, false, false, ['ID', 'NAME', 'PROPERTY_PRODUCT', 'PROPERTY_AUTHOR']);
+    $res = CIBlockElement::GetList(["PROPERTY_PRODUCT" => "desc"],
+        $arFilter,
+        false,
+        false,
+        ['ID', 'NAME', 'PROPERTY_PRODUCT', 'PROPERTY_AUTHOR']);
 }
 
 $reviewsCount = 0;
