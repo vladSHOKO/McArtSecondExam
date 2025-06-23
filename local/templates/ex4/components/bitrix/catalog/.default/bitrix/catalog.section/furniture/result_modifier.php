@@ -54,10 +54,6 @@ while ($review = $res->Fetch()) {
 
 
 if ($reviewsCount != 0) {
-    //Изменение placeholder в мета теге ex2_meta
-    $metaValue = $APPLICATION->GetPageProperty('ex2_meta');
-    $APPLICATION->SetPageProperty('ex2_meta', 'ex2 ' . $reviewsCount);
-
     $firstReview = reset($reviews);
     $firstReviewTitle = $firstReview[key($firstReview)];
 }
@@ -74,8 +70,11 @@ foreach ($arResult['ITEMS'] as $key => $arItem) {
 
     $arResult['ITEMS'][$key] = $arItem;
 
-    if (!empty($firstReviewTitle)) {
-        $arResult['FIRST_REVIEW_TITLE'] = $firstReviewTitle;
-        $this->__component->SetResultCacheKeys(['FIRST_REVIEW_TITLE']);
-    }
+
 }
+if (!empty($firstReviewTitle)) {
+    $arResult['FIRST_REVIEW_TITLE'] = $firstReviewTitle;
+    $this->__component->SetResultCacheKeys(['FIRST_REVIEW_TITLE']);
+}
+$arResult['REVIEW_COUNT'] = $reviewsCount;
+$this->__component->SetResultCacheKeys(['REVIEW_COUNT']);
