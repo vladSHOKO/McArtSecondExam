@@ -2,6 +2,7 @@
 
 include 'ReviewEventHandler.php';
 include 'UserEventHandler.php';
+include 'MenuEventHandler.php';
 
 $eventManager = \Bitrix\Main\EventManager::GetInstance();
 
@@ -46,3 +47,6 @@ function Agent_ex_610() {
 
     return "Agent_ex_610();";
 }
+
+//Задание ex2-190
+$eventManager->addEventHandler('main', 'OnBuildGlobalMenu', ['MenuEventHandler', 'configAdminMenuForContentManager']);
