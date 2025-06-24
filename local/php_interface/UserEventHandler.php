@@ -2,6 +2,10 @@
 
 class UserEventHandler
 {
+    private static ?string $oldUserClassName;
+
+    private static ?string $newUserClassName;
+
     public static function saveUserClassBeforeUpdate(&$arFields)
     {
         $classList = self::makeUserClassFieldsList();
@@ -11,11 +15,8 @@ class UserEventHandler
         $userOldClassName = $classList[$currentUser['UF_USER_CLASS']];
         $userNewClassName = $classList[$arFields['UF_USER_CLASS']];
 
-        $GLOBALS['USER_CHANGES'] = [
-            'OLD_USER_CLASS' => $userOldClassName,
-            'NEW_USER_CLASS' => $userNewClassName,
-        ];
-        \Bitrix\Iblock\IblockTable::getList();
+        self::$oldUserClassName = $userOldClassName;
+        self::$newUserClassName = $userNewClassName;
     }
 
     public static function makeUserClassFieldsList(): array
@@ -37,8 +38,9 @@ class UserEventHandler
 
     public static function checkUserClassChangesAfterUpdate(&$arFields)
     {
-        if ($GLOBALS['USER_CHANGES']['OLD_USER_CLASS'] != $GLOBALS['USER_CHANGES']['NEW_USER_CLASS']) {
+        if (self::$oldUserClassName != self::$newUserClassName) {
             self::sendEmail();
+            self::unsetOldAndNewUserClass();
         }
 
         return true;
@@ -48,8 +50,8 @@ class UserEventHandler
     {
         $eventName = 'EX2_AUTHOR_INFO';
 
-        $userOldClass = $GLOBALS['USER_CHANGES']['OLD_USER_CLASS'];
-        $userNewClass = $GLOBALS['USER_CHANGES']['NEW_USER_CLASS'];
+        $userOldClass = self::$oldUserClassName;
+        $userNewClass = self::$newUserClassName;
 
         $fields = [
             'OLD_USER_CLASS' => $userOldClass,
@@ -69,5 +71,11 @@ class UserEventHandler
         $arParams['FIELDS']['MESSAGE'] = 'TEST';
 
         CEvent::Send('USER_INFO', 's1', $arParams['FIELDS']);
+    }
+
+    private static function unsetOldAndNewUserClass(): void
+    {
+        self::$oldUserClassName = null;
+        self::$newUserClassName = null;
     }
 }
