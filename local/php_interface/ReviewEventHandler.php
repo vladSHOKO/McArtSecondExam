@@ -2,6 +2,10 @@
 
 class ReviewEventHandler
 {
+    private static ?int $oldAuthor;
+
+    private static ?int $newAuthor;
+
     public static function onBeforeIBlockElementAddOrUpdateHandler(&$arFields): bool
     {
         $reviewIBlockId = DefaultValueKeeper::getReviewIBlockId();
@@ -39,19 +43,20 @@ class ReviewEventHandler
             return true;
         }
 
-        $element = CIBlockElement::GetByID($arFields['ID'])->Fetch();
+        $dataClass = \Bitrix\Iblock\Iblock::wakeUp(DefaultValueKeeper::getReviewIBlockId())->getEntityDataClass();
+        $oneMoreElement = $dataClass::getList([
+            'select' => ['ID', 'NAME', 'AUTHOR.VALUE'],
+            'filter' => ['ID' => $arFields['ID'], 'ACTIVE' => 'Y'],
+        ])->fetch();
 
-        $oldAuthor = CIBlockElement::GetProperty($arFields['IBLOCK_ID'], $element['ID'], [], [], ['CODE' => 'AUTHOR'])->Fetch()['VALUE'];
+        $oldAuthor = (int)$oneMoreElement['IBLOCK_ELEMENTS_ELEMENT_REVIEWS_AUTHOR_VALUE'];
 
         //Получение ID нового автора по изменяемому id свойства
         $newAuthorKey = key($arFields['PROPERTY_VALUES'][9]);
         $newAuthor = $arFields['PROPERTY_VALUES'][9][$newAuthorKey]['VALUE'];
 
-
-        $GLOBALS['AUTHOR_CHANGES'] = [
-            'OLD_AUTHOR' => $oldAuthor,
-            'NEW_AUTHOR' => $newAuthor,
-        ];
+        self::$oldAuthor = $oldAuthor;
+        self::$newAuthor = $newAuthor;
 
         return true;
     }
@@ -64,8 +69,8 @@ class ReviewEventHandler
             return true;
         }
 
-        if ($GLOBALS['AUTHOR_CHANGES']['OLD_AUTHOR'] !== $GLOBALS['AUTHOR_CHANGES']['NEW_AUTHOR']) {
-            self::logAuthorChanges($arFields['IBLOCK_ID']);
+        if (self::$oldAuthor !== self::$newAuthor) {
+            self::logAuthorChanges($arFields['ID']);
         }
 
         return true;
@@ -73,8 +78,8 @@ class ReviewEventHandler
 
     public static function logAuthorChanges(string|int $reviewId): void
     {
-        $oldAuthor = $GLOBALS['AUTHOR_CHANGES']['OLD_AUTHOR'];
-        $newAuthor = $GLOBALS['AUTHOR_CHANGES']['NEW_AUTHOR'];
+        $oldAuthor = self::$oldAuthor;
+        $newAuthor = self::$newAuthor;
 
         CEventLog::Add(
             [
@@ -84,6 +89,7 @@ class ReviewEventHandler
 
             ]
         );
+        self::unsetOldAndNewAuthor();
     }
 
     public static function addReviewTitleOnBeforeIndex($arFields): array
@@ -112,5 +118,11 @@ class ReviewEventHandler
         }
 
         return $arFields;
+    }
+
+    private static function unsetOldAndNewAuthor(): void
+    {
+        self::$oldAuthor = null;
+        self::$newAuthor = null;
     }
 }
