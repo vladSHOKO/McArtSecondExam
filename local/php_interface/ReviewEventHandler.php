@@ -98,21 +98,25 @@ class ReviewEventHandler
             return $arFields;
         }
 
-        $requestProperty = CIBlockElement::GetProperty(5, $arFields['ITEM_ID']);
-
-        $reviewProperties = [];
-
-        while ($result = $requestProperty->Fetch()) {
-            $reviewProperties[$result['ID']] = $result['VALUE'];
-        }
-
-        $authorID = $reviewProperties[9];
-
         $classList = UserEventHandler::makeUserClassFieldsList();
 
-        $requestAuthorProperty = CUser::GetByID($authorID)->Fetch();
+        $dataClass = \Bitrix\Iblock\Iblock::wakeUp(DefaultValueKeeper::getReviewIBlockId())->getEntityDataClass();
+        $element = $dataClass::getList([
+            'select' => ['ID', 'AUTHOR.VALUE'],
+            'filter' => [
+                'ID' => $arFields['ITEM_ID'],
+            ]
+        ])->fetch();
 
-        $userClassName = $classList[$requestAuthorProperty['UF_USER_CLASS']];
+        $user = \Bitrix\Main\UserTable::getList([
+            'select' => ['ID', 'UF_USER_CLASS'],
+            'filter' => [
+                'ID' => (int)$element['IBLOCK_ELEMENTS_ELEMENT_REVIEWS_AUTHOR_VALUE'],
+            ]
+        ])->fetch();
+
+        $userClassName = $classList[$user['UF_USER_CLASS']];
+
         if (!empty($userClassName)) {
             $arFields['TITLE'] .= ". Класс: {$userClassName}";
         }
