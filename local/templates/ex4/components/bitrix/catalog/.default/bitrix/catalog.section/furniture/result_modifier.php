@@ -24,26 +24,25 @@ $users = \Bitrix\Main\UserTable::getList([
 
 $validAuthorsId = array_column($users, 'ID');
 
-$arFilter = [
-    'IBLOCK_ID' => $reviewIBlockId,
-    'PROPERTY_PRODUCT' => $productIds,
-    'PROPERTY_AUTHOR' => $validAuthorsId,
-];
-if (!empty($productIds)) {
-    $res = CIBlockElement::GetList(["PROPERTY_PRODUCT" => "desc"],
-        $arFilter,
-        false,
-        false,
-        ['ID', 'NAME', 'PROPERTY_PRODUCT', 'PROPERTY_AUTHOR']);
-}
-
 $reviewsCount = 0;
 
-while ($review = $res->Fetch()) {
-    $reviews[$review['PROPERTY_PRODUCT_VALUE']][] = $review['NAME'];
-    $reviewsCount++;
-}
+if (!empty($productIds)) {
+    $dataClass = \Bitrix\Iblock\Iblock::wakeUp(DefaultValueKeeper::getReviewIBlockId())->getEntityDataClass();
+    $res = $dataClass::getList([
+        'select' => ['ID', 'NAME', 'PRODUCT.VALUE', 'AUTHOR.VALUE'],
+        'filter' => [
+            'IBLOCK_ID' => $reviewIBlockId,
+            'AUTHOR.VALUE' => $validAuthorsId,
+            'PRODUCT.VALUE' => $productIds,
+        ],
+        'order' => ['PRODUCT.VALUE' => 'desc']
+    ]);
 
+    while ($review = $res->fetch()) {
+        $reviews[(int)$review['IBLOCK_ELEMENTS_ELEMENT_REVIEWS_PRODUCT_VALUE']][] = $review['NAME'];
+        $reviewsCount++;
+    }
+}
 
 if ($reviewsCount != 0) {
     $firstReview = reset($reviews);
