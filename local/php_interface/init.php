@@ -4,6 +4,7 @@ include 'ReviewEventHandler.php';
 include 'UserEventHandler.php';
 include 'MenuEventHandler.php';
 include 'DefaultValueKeeper.php';
+include 'ReviewAgent.php';
 
 DefaultValueKeeper::setDefaults();
 
@@ -26,32 +27,6 @@ $eventManager->registerEventHandler('main', 'OnSendUserInfo', 'main', 'UserEvent
 
 //Задание ex2-630
 $eventManager->registerEventHandler('search', 'BeforeIndex', 'search', 'ReviewEventHandler', 'addReviewTitleOnBeforeIndex');
-
-//Задание ex2-610
-function Agent_ex_610() {
-
-    $recentStart = COption::GetOptionString("main", "agent_recent_start");
-    $currentTime = ConvertTimeStamp(time(), "FULL");
-
-    if (empty($recentStart)) {
-        AddMessage2Log('Агент сработал, но без первой даты');
-        COption::SetOptionString("main", 'agent_recent_start', $currentTime);
-        return "Agent_ex_610();";
-    }
-
-    $reviewIBlockId = DefaultValueKeeper::getReviewIBlockId();
-
-    $arFilter = [
-        'ACTIVE' => 'Y',
-        'IBLOCK_ID' => $reviewIBlockId,
-    ];
-
-    $res = CIBlockElement::GetList([], $arFilter);
-
-    AddMessage2Log($res->Fetch());
-
-    return "Agent_ex_610();";
-}
 
 //Задание ex2-190
 $eventManager->addEventHandler('main', 'OnBuildGlobalMenu', ['MenuEventHandler', 'configAdminMenuForContentManager']);
