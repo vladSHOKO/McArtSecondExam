@@ -41,8 +41,6 @@ class ReviewAgent
             '>TIMESTAMP_X' => $previousStartDate,
         ];
 
-        $res = CIBlockElement::GetList([], $arFilter, [], [], ['ID', 'TIMESTAMP_X']);
-
         $dataClass = \Bitrix\Iblock\Iblock::wakeUp($reviewIBlockId)->getEntityDataClass();
         $res = $dataClass::getList([
             'select' => [
