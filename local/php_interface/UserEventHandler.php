@@ -6,11 +6,16 @@ class UserEventHandler
 
     private static ?string $newUserClassName;
 
-    public static function saveUserClassBeforeUpdate(&$arFields)
+    public static function saveUserClassBeforeUpdate(&$arFields): void
     {
         $classList = self::makeUserClassFieldsList();
 
-        $currentUser = CUser::GetByID($arFields['ID'])->Fetch();
+        $currentUser = \Bitrix\Main\UserTable::getList([
+            'select' => ['ID', 'NAME', 'UF_USER_CLASS'],
+            'filter' => [
+                'ID' => $arFields['ID'],
+            ]
+        ])->fetch();
 
         $userOldClassName = $classList[$currentUser['UF_USER_CLASS']];
         $userNewClassName = $classList[$arFields['UF_USER_CLASS']];
@@ -21,16 +26,19 @@ class UserEventHandler
 
     public static function makeUserClassFieldsList(): array
     {
-        $arFilter = [
-            'USER_FIELD_ID' => 11 //ID пользовательского поля с классами
-        ];
+        $userFieldID = \Bitrix\Main\UserFieldTable::getList([
+            'select' => ['ID', 'FIELD_NAME'],
+            'filter' => ['FIELD_NAME' => 'UF_USER_CLASS']
+        ])->fetch();
 
-        $userField = CUserFieldEnum::GetList([], $arFilter);
+        $userFieldQuery = \Bitrix\Main\UserField\Types\EnumType::getList([
+            'select' => ['*'],
+            'filter' => ['USER_FIELD_ID' => $userFieldID['ID']]
+        ]);
 
         $userFieldList = [];
-
-        while ($arField = $userField->Fetch()) {
-            $userFieldList[$arField['ID']] = $arField['VALUE'];
+        while ($userField = $userFieldQuery->fetch()) {
+            $userFieldList[$userField['ID']] = $userField['VALUE'];
         }
 
         return $userFieldList;
@@ -62,7 +70,10 @@ class UserEventHandler
 
     public static function onSendUserInfo(&$arParams)
     {
-        $user = CUser::GetByID($arParams['FIELDS']['USER_ID'])->Fetch();
+        $user = \Bitrix\Main\UserTable::getList([
+            'select' => ['ID', 'UF_USER_CLASS'],
+            'filter' => ['ID' => $arParams['FIELDS']['USER_ID']]
+        ])->fetch();
 
         $userClassList = self::makeUserClassFieldsList();
 
