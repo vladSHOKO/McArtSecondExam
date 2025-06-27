@@ -10,19 +10,26 @@ class ReviewAgent
 
         self::logInfo($currentReviewQuantity, $previousStartDate);
 
+        self::setNewAgentStartDate();
+
         return 'ReviewAgent::Agent_ex_610();';
     }
 
-    public static function getPreviousAgentStartDate(): string
+    private static function getPreviousAgentStartDate(): string
     {
-        $recentStart = COption::GetOptionString("main", "agent_recent_start");
+        $recentStart = \Bitrix\Main\Config\Option::get('main', 'agent_recent_start');
 
         if (empty($recentStart)) {
-            COption::SetOptionString("main", "agent_recent_start", ConvertTimeStamp(time(), "FULL"));
+            \Bitrix\Main\Config\Option::set("main", "agent_recent_start", ConvertTimeStamp(time(), "FULL"));
             return 'first start';
         }
 
         return $recentStart;
+    }
+
+    private static function setNewAgentStartDate(): void
+    {
+        \Bitrix\Main\Config\Option::set("main", "agent_recent_start", ConvertTimeStamp(time(), "FULL"));
     }
 
     private static function countChangedReviewsFromDate($previousStartDate): int
@@ -31,15 +38,22 @@ class ReviewAgent
 
         $arFilter = [
             'ACTIVE' => 'Y',
-            'IBLOCK_ID' => $reviewIBlockId,
             '>TIMESTAMP_X' => $previousStartDate,
         ];
 
         $res = CIBlockElement::GetList([], $arFilter, [], [], ['ID', 'TIMESTAMP_X']);
 
+        $dataClass = \Bitrix\Iblock\Iblock::wakeUp($reviewIBlockId)->getEntityDataClass();
+        $res = $dataClass::getList([
+            'select' => [
+                'ID', 'TIMESTAMP_X'
+            ],
+            'filter' => $arFilter
+        ]);
+
         $reviews = [];
 
-        while ($arItem = $res->Fetch()) {
+        while ($arItem = $res->fetch()) {
             $reviews[] = $arItem;
         }
 
