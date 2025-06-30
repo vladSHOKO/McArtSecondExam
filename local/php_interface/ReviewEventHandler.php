@@ -4,8 +4,6 @@ class ReviewEventHandler
 {
     private static ?int $oldAuthor;
 
-    private static ?int $newAuthor;
-
     public static function onBeforeIBlockElementAddOrUpdateHandler(&$arFields): bool
     {
         $reviewIBlockId = DefaultValueKeeper::getReviewIBlockId();
@@ -51,12 +49,7 @@ class ReviewEventHandler
 
         $oldAuthor = (int)$oneMoreElement['IBLOCK_ELEMENTS_ELEMENT_REVIEWS_AUTHOR_VALUE'];
 
-        //Получение ID нового автора по изменяемому id свойства
-        $newAuthorKey = key($arFields['PROPERTY_VALUES'][9]);
-        $newAuthor = $arFields['PROPERTY_VALUES'][9][$newAuthorKey]['VALUE'];
-
         self::$oldAuthor = $oldAuthor;
-        self::$newAuthor = $newAuthor;
 
         return true;
     }
@@ -69,17 +62,20 @@ class ReviewEventHandler
             return true;
         }
 
-        if (self::$oldAuthor !== self::$newAuthor) {
-            self::logAuthorChanges($arFields['ID']);
+        //Получение ID нового автора по изменяемому id свойства
+        $newAuthorKey = key($arFields['PROPERTY_VALUES'][9]);
+        $newAuthor = $arFields['PROPERTY_VALUES'][9][$newAuthorKey]['VALUE'];
+
+        if (self::$oldAuthor !== $newAuthor) {
+            self::logAuthorChanges($arFields['ID'], $newAuthor);
         }
 
         return true;
     }
 
-    public static function logAuthorChanges(string|int $reviewId): void
+    public static function logAuthorChanges(string|int $reviewId, string|int $newAuthor): void
     {
         $oldAuthor = self::$oldAuthor;
-        $newAuthor = self::$newAuthor;
 
         CEventLog::Add(
             [
@@ -89,7 +85,7 @@ class ReviewEventHandler
 
             ]
         );
-        self::unsetOldAndNewAuthor();
+        self::unsetOldAuthor();
     }
 
     public static function addReviewTitleOnBeforeIndex($arFields): array
@@ -124,9 +120,8 @@ class ReviewEventHandler
         return $arFields;
     }
 
-    private static function unsetOldAndNewAuthor(): void
+    private static function unsetOldAuthor(): void
     {
         self::$oldAuthor = null;
-        self::$newAuthor = null;
     }
 }
