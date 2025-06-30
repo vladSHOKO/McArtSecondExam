@@ -46,23 +46,23 @@ class UserEventHandler
 
         $newUserClassName = $classList[$arFields['UF_USER_CLASS']];
 
-        if (self::$oldUserClassName != $newUserClassName) {
+        if (self::$oldUserClassName !== $newUserClassName) {
             self::sendEmail($newUserClassName);
-            self::unsetOldUserClass();
         }
+        self::unsetOldUserClass();
 
         return true;
     }
 
-    public static function sendEmail(string $userNewClass): void
+    public static function sendEmail(string $newUserClass): void
     {
         $eventName = 'EX2_AUTHOR_INFO';
 
-        $userOldClass = self::$oldUserClassName;
+        $oldUserClass = self::$oldUserClassName;
 
         $fields = [
-            'OLD_USER_CLASS' => $userOldClass,
-            'NEW_USER_CLASS' => $userNewClass,
+            'OLD_USER_CLASS' => $oldUserClass,
+            'NEW_USER_CLASS' => $newUserClass,
         ];
         CEvent::Send($eventName, 's1', $fields);
     }
@@ -77,8 +77,6 @@ class UserEventHandler
         $userClassList = self::makeUserClassFieldsList();
 
         $arParams['FIELDS']['CLASS'] = $userClassList[$user['UF_USER_CLASS']];
-
-        $arParams['FIELDS']['MESSAGE'] = 'TEST';
 
         CEvent::Send('USER_INFO', 's1', $arParams['FIELDS']);
     }
