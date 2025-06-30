@@ -8,10 +8,13 @@ class DefaultValueKeeper
 
     private static int $authorGroupId;
 
+    private static int $userStatusIBlockId;
+
     public static function setDefaults(): void
     {
         self::setReviewIBlockId();
         self::setAuthorGroupId();
+        self::setUserStatusIBlockId();
     }
 
     private static function setReviewIBlockId(): void
@@ -24,6 +27,11 @@ class DefaultValueKeeper
         ])->fetch())['ID'];
     }
 
+    public static function getReviewIBlockId(): int
+    {
+        return self::$reviewIBlockId;
+    }
+
     private static function setAuthorGroupId(): void
     {
         self::$authorGroupId = (\Bitrix\Main\GroupTable::getList([
@@ -32,13 +40,21 @@ class DefaultValueKeeper
         ])->fetch())['ID'];
     }
 
-    public static function getReviewIBlockId(): int
-    {
-        return self::$reviewIBlockId;
-    }
-
     public static function getAuthorGroupId(): int
     {
         return self::$authorGroupId;
+    }
+
+    private static function setUserStatusIBlockId(): void
+    {
+        self::$userStatusIBlockId = (\Bitrix\Iblock\IblockTable::getList([
+            'filter' => ['CODE' => 'status'],
+            'select' => ['ID']
+        ]))->fetch()['ID'];
+    }
+
+    public static function getUserStatusIBlockId(): int
+    {
+        return self::$userStatusIBlockId;
     }
 }
