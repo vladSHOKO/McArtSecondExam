@@ -12,9 +12,19 @@ $reviewIBlockId = DefaultValueKeeper::getReviewIBlockId();
 
 $authorGroupId = DefaultValueKeeper::getAuthorGroupId();
 
+$userStatusId = DefaultValueKeeper::getUserStatusIBlockId();
+
+$publishedStatusId = \Bitrix\Iblock\ElementTable::getList([
+    'select' => ['ID'],
+    'filter' => [
+        'IBLOCK_ID' => $userStatusId,
+        'CODE' => 'published'
+    ]
+])->fetch()['ID'];
+
 $users = \Bitrix\Main\UserTable::getList([
     'filter' => [
-        '=UF_AUTHOR_STATUS' => '35', //Значение "Публикуется"
+        '=UF_AUTHOR_STATUS' => $publishedStatusId, //Значение "Публикуется"
         "Bitrix\Main\UserGroupTable:USER.GROUP_ID" => $authorGroupId
     ],
     'select' => [
@@ -60,8 +70,6 @@ foreach ($arResult['ITEMS'] as $key => $arItem) {
     $arItem['REVIEWS'] = $reviews[$arItem['ID']] ?? [];
 
     $arResult['ITEMS'][$key] = $arItem;
-
-
 }
 if (!empty($firstReviewTitle)) {
     $arResult['FIRST_REVIEW_TITLE'] = $firstReviewTitle;
