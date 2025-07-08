@@ -5,6 +5,7 @@ include 'UserEventHandler.php';
 include 'MenuEventHandler.php';
 include 'DefaultValueKeeper.php';
 include 'ReviewAgent.php';
+include 'MailEventHandler.php';
 
 DefaultValueKeeper::setDefaults();
 
@@ -30,3 +31,6 @@ $eventManager->registerEventHandler('search', 'BeforeIndex', 'search', 'ReviewEv
 
 //Задание ex2-190
 $eventManager->addEventHandler('main', 'OnBuildGlobalMenu', ['MenuEventHandler', 'configAdminMenuForContentManager']);
+
+//Задание ex2-51
+$eventManager->addEventHandler('main', 'OnBeforeEventAdd', ['MailEventHandler', 'OnBeforeEventAddHandler']);
