@@ -11,4 +11,8 @@ $arTemplateParameters = [
         "TYPE" => "CHECKBOX",
         "DEFAULT" => "N",
     ),
+    'IBLOCK_ID_FOR_LINK' => [
+        'NAME' => GetMessage('IBLOCK_ID_FOR_CANONICAL'),
+        'TYPE' => 'STRING',
+    ],
 ];

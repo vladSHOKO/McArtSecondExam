@@ -10,11 +10,14 @@ class DefaultValueKeeper
 
     private static int $userStatusIBlockId;
 
+    private static int $canonicalIBlockId;
+
     public static function setDefaults(): void
     {
         self::setReviewIBlockId();
         self::setAuthorGroupId();
         self::setUserStatusIBlockId();
+        self::setCanonicalIBlockId();
     }
 
     private static function setReviewIBlockId(): void
@@ -56,5 +59,20 @@ class DefaultValueKeeper
     public static function getUserStatusIBlockId(): int
     {
         return self::$userStatusIBlockId;
+    }
+
+    private static function setCanonicalIBlockId(): void
+    {
+        self::$canonicalIBlockId = (\Bitrix\Iblock\IblockTable::getList([
+            'filter' => [
+                'CODE' => 'canonical'
+            ],
+            'select' => ['ID']
+        ])->fetch())['ID'];
+    }
+
+    public static function getCanonicalIBlockId(): int
+    {
+        return self::$canonicalIBlockId;
     }
 }

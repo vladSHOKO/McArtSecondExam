@@ -35,6 +35,7 @@ IncludeTemplateLangFile(__FILE__);
 		
 	</style>
 	<![endif]-->
+    <?$APPLICATION->ShowProperty('canonical'); ?>
 
 	<title><? $APPLICATION->ShowTitle() ?></title>
 </head>
