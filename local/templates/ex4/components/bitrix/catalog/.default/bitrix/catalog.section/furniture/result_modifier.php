@@ -77,3 +77,6 @@ if (!empty($firstReviewTitle)) {
 }
 $arResult['REVIEW_COUNT'] = $reviewsCount;
 $this->__component->SetResultCacheKeys(['REVIEW_COUNT']);
+
+CIBlockElement::GetList([], ['IBLOCK_ID' => 5]);
+AddMessage2Log(CIBlockElement::GetList([], ['IBLOCK_ID' => 5], false, false, ['PROPERTY_AUTHOR', 'ID'])->Fetch());

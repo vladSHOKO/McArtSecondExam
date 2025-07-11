@@ -4,6 +4,10 @@ class MailEventHandler
 {
     public static function OnBeforeEventAddHandler(&$event, &$lid, &$arFields)
     {
+        if (!$event == 'FEEDBACK_FORM'){
+            return false;
+        }
+
         global $USER;
         if ($USER->IsAuthorized()) {
             $arFields['AUTHOR'] = "Пользователь авторизован: {$USER->GetID()} ({$USER->GetLogin()}) {$USER->GetFirstName()}, данные из формы: {$arFields['AUTHOR']}";

@@ -7,7 +7,7 @@ if (!empty($arParams['IBLOCK_ID_FOR_LINK'])) {
         'select' => ['NAME', 'ID']
     ])->fetch();
 }
-AddMessage2Log($element['NAME']);
+
 if (!empty($element)) {
     $arResult['IBLOCK_ELEMENT_NAME'] = $element['NAME'];
     $this->__component->SetResultCacheKeys(['IBLOCK_ELEMENT_NAME']);
