@@ -8,8 +8,11 @@ IncludeTemplateLangFile(__FILE__);
 
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="ex2_meta" content="<?$APPLICATION->ShowProperty('ex2_meta');?>">
 	<? $APPLICATION->ShowHead(); ?>
-	<link href="<?= SITE_TEMPLATE_PATH ?>/common.css" type="text/css" rel="stylesheet" />
+
+    <link href="<?= SITE_TEMPLATE_PATH ?>/common.css" type="text/css" rel="stylesheet" />
 	<link href="<?= SITE_TEMPLATE_PATH ?>/colors.css" type="text/css" rel="stylesheet" />
 
 	<!-- ex2 -->
@@ -138,6 +141,8 @@ IncludeTemplateLangFile(__FILE__);
 						?>
 					</div>
 				</div>
+
+                <?$APPLICATION->ShowViewContent('ex2_meta')?>
 
 				<div class="content-block">
 					<div class="content-block-inner">
