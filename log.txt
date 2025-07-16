@@ -1,0 +1,34 @@
+Host: 10.1.0.23:80
+Date: 2025-07-16 07:55:49
+array (
+  0 => 
+  array (
+    'ID' => '68',
+    '~ID' => '68',
+    'PROPERTY_PRODUCT_VALUE' => '23',
+    '~PROPERTY_PRODUCT_VALUE' => '23',
+    'PROPERTY_PRODUCT_VALUE_ID' => '187',
+    '~PROPERTY_PRODUCT_VALUE_ID' => '187',
+    'NAME' => 'Рецензия Влаенсия',
+    '~NAME' => 'Рецензия Влаенсия',
+    'PROPERTY_AUTHOR_VALUE_NUM' => '1.0000',
+    '~PROPERTY_AUTHOR_VALUE_NUM' => '1.0000',
+    'PROPERTY_AUTHOR_VALUE' => 1,
+    '~PROPERTY_AUTHOR_VALUE' => 1,
+    'PROPERTY_AUTHOR_VALUE_ID' => '186',
+    '~PROPERTY_AUTHOR_VALUE_ID' => '186',
+  ),
+)
+#0: AddMessage2Log
+	/home/bitrix/www/local/templates/ex2_type4/components/bitrix/catalog/.default/bitrix/catalog.section/furniture/result_modifier.php:17
+#1: include(string)
+	/home/bitrix/www/bitrix/modules/main/classes/general/component_template.php:947
+#2: CBitrixComponentTemplate->__IncludeMutatorFile
+	/home/bitrix/www/bitrix/modules/main/classes/general/component_template.php:854
+#3: CBitrixComponentTemplate->IncludeTemplate
+	/home/bitrix/www/bitrix/modules/main/classes/general/component.php:784
+#4: CBitrixComponent->showComponentTemplate
+	/home/bitrix/www/bitrix/modules/main/classes/general/component.php:724
+#5: CBitrixComponent->includeComponentTemplate
+	/home/bitrix/www/bitrix/modules/iblock/lib/component/base.php:4722
+----------
