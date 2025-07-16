@@ -1,0 +1,14 @@
+<?php
+
+if ($arParams['DISPLAY_SPECIALDATE'] === 'Y') {
+
+    $news = \Bitrix\Iblock\ElementTable::getList([
+        'filter' => ['IBLOCK_ID' => DefaultValueKeeper::getNewsIBlockId()],
+        'select' => ['*'],
+        'order' => [$arParams['SORT_BY1'] => $arParams['SORT_ORDER1']],
+    ])->fetch()['ACTIVE_FROM']->format('d.m.Y');
+
+    $arResult['NEWS_DATE'] = $news;
+
+    $this->__component->SetResultCacheKeys(['NEWS_DATE']);
+}
